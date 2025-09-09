@@ -34,4 +34,7 @@ dbt_packages/
 .idea/
 .vscode/
 
+# Project logs
+backend/uvicorn.log
+
 
