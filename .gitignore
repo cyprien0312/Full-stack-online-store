@@ -1,0 +1,37 @@
+# General
+.DS_Store
+.env
+.env.*
+.venv/
+venv/
+.python-version
+__pycache__/
+*.pyc
+*.pyo
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+coverage*
+dist/
+build/
+logs/
+
+# Node/Frontend
+node_modules/
+.next/
+.turbo/
+out/
+
+# Docker
+.docker/
+
+# dbt/ELT
+target/
+dbt_packages/
+.dbt/
+
+# IDE
+.idea/
+.vscode/
+
+
