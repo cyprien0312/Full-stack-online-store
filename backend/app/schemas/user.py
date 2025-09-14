@@ -2,6 +2,10 @@
 from pydantic import BaseModel, EmailStr
 from pydantic import ConfigDict
 
+class UserCreate(BaseModel):
+    email: EmailStr
+    name: str
+    
 class UserOut(BaseModel):
     id: int
     email: EmailStr
