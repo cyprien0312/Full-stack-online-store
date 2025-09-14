@@ -7,4 +7,5 @@ loguru==0.7.2
 sqlalchemy==2.0.32
 psycopg[binary]==3.2.1
 alembic==1.13.2
+email-validator==2.2.0
 
