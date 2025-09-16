@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, ConfigDict
-from typing import List
+from typing import List, Optional
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -16,3 +16,7 @@ class UserListOut(BaseModel):
     total: int
     page: int
     size: int
+
+class UserUpdate(BaseModel):
+    email: Optional[EmailStr] = None
+    name: Optional[str] = None

@@ -5,7 +5,7 @@ from sqlalchemy import or_
 
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.user import UserOut, UserCreate, UserListOut
+from app.schemas.user import UserOut, UserCreate, UserListOut, UserUpdate
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -54,3 +54,43 @@ def create_user(user_in: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(u)
     return u
+
+@router.put("/{user_id}", response_model=UserOut)
+def replace_user(user_id: int, user_in: UserCreate, db: Session = Depends(get_db)):
+    u = db.get(User, user_id)
+    if not u:
+        raise HTTPException(status_code=404, detail="User not found")
+    # 唯一性校验
+    exists = db.query(User).filter(User.email == user_in.email, User.id != user_id).first()
+    if exists:
+        raise HTTPException(status_code=409, detail="Email already exists")
+    u.email = user_in.email
+    u.name = user_in.name
+    db.commit()
+    db.refresh(u)
+    return u
+
+@router.patch("/{user_id}", response_model=UserOut)
+def update_user(user_id: int, user_in: UserUpdate, db: Session = Depends(get_db)):
+    u = db.get(User, user_id)
+    if not u:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user_in.email is not None:
+        exists = db.query(User).filter(User.email == user_in.email, User.id != user_id).first()
+        if exists:
+            raise HTTPException(status_code=409, detail="Email already exists")
+        u.email = user_in.email
+    if user_in.name is not None:
+        u.name = user_in.name
+    db.commit()
+    db.refresh(u)
+    return u
+
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user(user_id: int, db: Session = Depends(get_db)):
+    u = db.get(User, user_id)
+    if not u:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(u)
+    db.commit()
+    return None
