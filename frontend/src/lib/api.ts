@@ -1,4 +1,4 @@
-import type { UserList } from '@/types/user';
+import type { UserList } from '@/types/users';
 
 export async function getUsers(params: {
   page?: number;

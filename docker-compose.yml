@@ -35,5 +35,21 @@ services:
       - ./backend/alembic:/app/alembic
       - ./backend/alembic.ini:/app/alembic.ini:ro
 
+  frontend:
+    build:
+      context: ./frontend
+    container_name: monorepo_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - API_ORIGIN=http://backend:8000
+      - NODE_ENV=development
+      - NEXT_DISABLE_TURBOPACK=1
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
 volumes:
   db_data:
