@@ -11,7 +11,10 @@ export default function UsersPage() {
   const [sort, setSort] = useState<'id' | 'email' | 'name' | 'created_at'>('id');
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
 
-  const queryKey = useMemo(() => ['users', { page, size, q, sort, order }], [page, size, q, sort, order]);
+  const queryKey = useMemo(
+    () => ['users', { page, size, q, sort, order }],
+    [page, size, q, sort, order]
+  );
 
   const { data, isLoading, isFetching, error } = useQuery<UserList>({
     queryKey,
@@ -24,7 +27,8 @@ export default function UsersPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }),
   });
   const updateMut = useMutation({
-    mutationFn: ({ id, body }: { id: number; body: Partial<{ email: string; name: string }> }) => updateUser(id, body),
+    mutationFn: ({ id, body }: { id: number; body: Partial<{ email: string; name: string }> }) =>
+      updateUser(id, body),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }),
   });
   const deleteMut = useMutation({
@@ -54,14 +58,24 @@ export default function UsersPage() {
           className="border rounded px-3 py-1"
           placeholder="Search email or name"
           value={q}
-          onChange={(e) => { setQ(e.target.value); setPage(1); }}
+          onChange={(e) => {
+            setQ(e.target.value);
+            setPage(1);
+          }}
         />
         <select
           className="border rounded px-2 py-1"
           value={size}
-          onChange={(e) => { setSize(Number(e.target.value)); setPage(1); }}
+          onChange={(e) => {
+            setSize(Number(e.target.value));
+            setPage(1);
+          }}
         >
-          {[5,10,20,50].map(s => <option key={s} value={s}>{s}/page</option>)}
+          {[5, 10, 20, 50].map((s) => (
+            <option key={s} value={s}>
+              {s}/page
+            </option>
+          ))}
         </select>
         {isFetching && <span className="text-sm text-gray-500">Refreshing…</span>}
       </div>
@@ -75,9 +89,15 @@ export default function UsersPage() {
           <table className="mt-4 w-full border-collapse">
             <thead>
               <tr className="text-left border-b">
-                <th className="py-2 cursor-pointer" onClick={() => toggleSort('id')}>ID {sort==='id' ? (order==='asc'?'▲':'▼') : ''}</th>
-                <th className="py-2 cursor-pointer" onClick={() => toggleSort('email')}>Email {sort==='email' ? (order==='asc'?'▲':'▼') : ''}</th>
-                <th className="py-2 cursor-pointer" onClick={() => toggleSort('name')}>Name {sort==='name' ? (order==='asc'?'▲':'▼') : ''}</th>
+                <th className="py-2 cursor-pointer" onClick={() => toggleSort('id')}>
+                  ID {sort === 'id' ? (order === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th className="py-2 cursor-pointer" onClick={() => toggleSort('email')}>
+                  Email {sort === 'email' ? (order === 'asc' ? '▲' : '▼') : ''}
+                </th>
+                <th className="py-2 cursor-pointer" onClick={() => toggleSort('name')}>
+                  Name {sort === 'name' ? (order === 'asc' ? '▲' : '▼') : ''}
+                </th>
                 <th className="py-2">Actions</th>
               </tr>
             </thead>
@@ -88,28 +108,47 @@ export default function UsersPage() {
                   <td className="py-2">{u.email}</td>
                   <td className="py-2">{u.name}</td>
                   <td className="py-2 flex gap-2">
-                    <button className="px-2 py-1 border rounded" onClick={() => {
-                      const name = window.prompt('New name', u.name) ?? undefined;
-                      if (name && name !== u.name) updateMut.mutate({ id: u.id, body: { name } });
-                    }}>Edit</button>
-                    <button className="px-2 py-1 border rounded" onClick={() => {
-                      if (window.confirm('Delete this user?')) deleteMut.mutate(u.id);
-                    }}>Delete</button>
+                    <button
+                      className="px-2 py-1 border rounded"
+                      onClick={() => {
+                        const name = window.prompt('New name', u.name) ?? undefined;
+                        if (name && name !== u.name) updateMut.mutate({ id: u.id, body: { name } });
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="px-2 py-1 border rounded"
+                      onClick={() => {
+                        if (window.confirm('Delete this user?')) deleteMut.mutate(u.id);
+                      }}
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
               {items.length === 0 && (
-                <tr><td className="py-4 text-gray-500" colSpan={3}>No data</td></tr>
+                <tr>
+                  <td className="py-4 text-gray-500" colSpan={3}>
+                    No data
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
 
           <div className="mt-4 flex gap-2">
-            <button className="px-3 py-1 border rounded" onClick={() => {
-              const email = window.prompt('Email');
-              const name = window.prompt('Name');
-              if (email && name) createMut.mutate({ email, name });
-            }}>Add User</button>
+            <button
+              className="px-3 py-1 border rounded"
+              onClick={() => {
+                const email = window.prompt('Email');
+                const name = window.prompt('Name');
+                if (email && name) createMut.mutate({ email, name });
+              }}
+            >
+              Add User
+            </button>
           </div>
 
           <div className="mt-4 flex items-center gap-3">
@@ -120,7 +159,9 @@ export default function UsersPage() {
             >
               Prev
             </button>
-            <span>Page {page} / {totalPages} (Total {total})</span>
+            <span>
+              Page {page} / {totalPages} (Total {total})
+            </span>
             <button
               className="border rounded px-3 py-1 disabled:opacity-50"
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
