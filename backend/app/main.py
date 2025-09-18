@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers.users import router as users_router
-from app.db.session import SessionLocal
+
 from app.db.init_db import init_db
+from app.db.session import SessionLocal
+from app.routers.users import router as users_router
+
 app = FastAPI(title="Backend API", version="0.1.0")
 
 
@@ -19,6 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.on_event("startup")
 def on_startup() -> None:
     try:
@@ -31,5 +34,6 @@ def on_startup() -> None:
             db.close()
         except Exception:
             pass
+
 
 app.include_router(users_router)

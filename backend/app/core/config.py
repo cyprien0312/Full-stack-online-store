@@ -1,6 +1,7 @@
-from functools import lru_cache
-from pydantic import BaseModel
 import os
+from functools import lru_cache
+
+from pydantic import BaseModel
 
 
 class Settings(BaseModel):
@@ -13,5 +14,3 @@ class Settings(BaseModel):
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     return Settings()
-
-

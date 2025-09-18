@@ -1,9 +1,10 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
-from typing import List, Optional
+from pydantic import BaseModel, ConfigDict, EmailStr
+
 
 class UserCreate(BaseModel):
     email: EmailStr
     name: str
+
 
 class UserOut(BaseModel):
     id: int
@@ -11,12 +12,14 @@ class UserOut(BaseModel):
     name: str
     model_config = ConfigDict(from_attributes=True)
 
+
 class UserListOut(BaseModel):
-    items: List[UserOut]
+    items: list[UserOut]
     total: int
     page: int
     size: int
 
+
 class UserUpdate(BaseModel):
-    email: Optional[EmailStr] = None
-    name: Optional[str] = None
+    email: EmailStr | None = None
+    name: str | None = None

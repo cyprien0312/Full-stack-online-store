@@ -1,5 +1,5 @@
-from sqlalchemy.orm import Session
 from app.models.user import User
+from sqlalchemy.orm import Session
 
 
 def init_db(db: Session) -> None:
@@ -8,5 +8,3 @@ def init_db(db: Session) -> None:
         demo = User(email="admin@example.com", name="Admin")
         db.add(demo)
         db.commit()
-
-
