@@ -1,4 +1,4 @@
-import type { UserList } from '@/types/users';
+import type { UserList, User } from '@/types/users';
 
 export async function getUsers(params: {
   page?: number;
@@ -18,4 +18,29 @@ export async function getUsers(params: {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Request failed: ${res.status}`);
   return res.json();
+}
+
+export async function createUser(body: { email: string; name: string }): Promise<User> {
+  const res = await fetch('/api/users/', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`Create failed: ${res.status}`);
+  return res.json();
+}
+
+export async function updateUser(id: number, body: Partial<{ email: string; name: string }>): Promise<User> {
+  const res = await fetch(`/api/users/${id}`, {
+    method: 'PATCH',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`Update failed: ${res.status}`);
+  return res.json();
+}
+
+export async function deleteUser(id: number): Promise<void> {
+  const res = await fetch(`/api/users/${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
 }

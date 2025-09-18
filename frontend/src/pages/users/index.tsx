@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { getUsers } from '@/lib/api';
+import { keepPreviousData, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { createUser, deleteUser, getUsers, updateUser } from '@/lib/api';
 import type { User, UserList } from '@/types/users';
 
 export default function UsersPage() {
+  const qc = useQueryClient();
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
   const [q, setQ] = useState('');
@@ -16,6 +17,19 @@ export default function UsersPage() {
     queryKey,
     queryFn: () => getUsers({ page, size, q: q.trim() || undefined, sort, order }),
     placeholderData: keepPreviousData,
+  });
+
+  const createMut = useMutation({
+    mutationFn: createUser,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }),
+  });
+  const updateMut = useMutation({
+    mutationFn: ({ id, body }: { id: number; body: Partial<{ email: string; name: string }> }) => updateUser(id, body),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }),
+  });
+  const deleteMut = useMutation({
+    mutationFn: (id: number) => deleteUser(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }),
   });
 
   const items = data?.items ?? [];
@@ -64,6 +78,7 @@ export default function UsersPage() {
                 <th className="py-2 cursor-pointer" onClick={() => toggleSort('id')}>ID {sort==='id' ? (order==='asc'?'▲':'▼') : ''}</th>
                 <th className="py-2 cursor-pointer" onClick={() => toggleSort('email')}>Email {sort==='email' ? (order==='asc'?'▲':'▼') : ''}</th>
                 <th className="py-2 cursor-pointer" onClick={() => toggleSort('name')}>Name {sort==='name' ? (order==='asc'?'▲':'▼') : ''}</th>
+                <th className="py-2">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -72,6 +87,15 @@ export default function UsersPage() {
                   <td className="py-2">{u.id}</td>
                   <td className="py-2">{u.email}</td>
                   <td className="py-2">{u.name}</td>
+                  <td className="py-2 flex gap-2">
+                    <button className="px-2 py-1 border rounded" onClick={() => {
+                      const name = window.prompt('New name', u.name) ?? undefined;
+                      if (name && name !== u.name) updateMut.mutate({ id: u.id, body: { name } });
+                    }}>Edit</button>
+                    <button className="px-2 py-1 border rounded" onClick={() => {
+                      if (window.confirm('Delete this user?')) deleteMut.mutate(u.id);
+                    }}>Delete</button>
+                  </td>
                 </tr>
               ))}
               {items.length === 0 && (
@@ -79,6 +103,14 @@ export default function UsersPage() {
               )}
             </tbody>
           </table>
+
+          <div className="mt-4 flex gap-2">
+            <button className="px-3 py-1 border rounded" onClick={() => {
+              const email = window.prompt('Email');
+              const name = window.prompt('Name');
+              if (email && name) createMut.mutate({ email, name });
+            }}>Add User</button>
+          </div>
 
           <div className="mt-4 flex items-center gap-3">
             <button
