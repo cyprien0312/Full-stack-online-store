@@ -1,6 +1,7 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import logging
 
 from app.db.init_db import init_db
 from app.db.session import SessionLocal
