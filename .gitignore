@@ -29,6 +29,7 @@ out/
 target/
 dbt_packages/
 .dbt/
+warehouse.duckdb
 
 # IDE
 .idea/

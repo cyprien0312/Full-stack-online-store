@@ -1,0 +1,8 @@
+name: elt_dbt
+version: 1.0.0
+profile: elt_profile
+model-paths: ["models"]
+models:
+  elt_dbt:
+    +materialized: view
+
