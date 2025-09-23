@@ -2,41 +2,34 @@
 
 ```mermaid
 flowchart LR
-  subgraph Client
+  subgraph "Client"
     B[Browser]
   end
 
-  subgraph Frontend
-    FE[Next.js (React, TS)]
+  subgraph "Frontend"
+    FE[Next.js React TS]
   end
 
-  subgraph Backend
+  subgraph "Backend"
     BE[FastAPI]
-    DB[(PostgreSQL)]
+    DB[(Postgres)]
   end
 
-  subgraph ELT
-    PF[Prefect Flow\\nusers_flow]
+  subgraph "ELT"
+    PF[Prefect users_flow]
     CSV[(raw/users.csv)]
-    DDB[(DuckDB\\nraw, analytics)]
-    DBT[dbt (DuckDB)\\nmodels]
+    DDB[(DuckDB)]
+    DBT[dbt models]
   end
 
   B -->|HTTP| FE
-  FE -->|/api/* rewrites| BE
-  BE -->|SQLAlchemy| DB
+  FE -->|/api/* rewrite| BE
+  BE --> DB
 
   PF -->|GET /users/| BE
-  PF -->|write| CSV
+  PF --> CSV
   PF -->|load raw.raw_users| DDB
   DBT -->|transform| DDB
-
-  style BE fill:#e6f3ff,stroke:#5aa0e6
-  style FE fill:#e9ffe6,stroke:#67c23a
-  style PF fill:#fff3e6,stroke:#f5a623
-  style DBT fill:#fff3e6,stroke:#f5a623
-  style DB fill:#f0f0f0,stroke:#bdbdbd
-  style DDB fill:#f0f0f0,stroke:#bdbdbd
 ```
 
 ## Notes
