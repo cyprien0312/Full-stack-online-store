@@ -10,9 +10,12 @@ This repository contains a production‑ready learning/project scaffold to build
 ```
 backend/   # FastAPI service
 frontend/  # Next.js app (to be scaffolded)
-elt/       # Prefect flows + dbt project (to be scaffolded)
+elt/       # Prefect flows + dbt project
 docs/      # Architecture and runbooks
 ```
+
+## Architecture
+See docs/ARCHITECTURE.md
 
 ## Quickstart (backend only for now)
 
