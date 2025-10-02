@@ -15,7 +15,40 @@ docs/      # Architecture and runbooks
 ```
 
 ## Architecture
-See docs/ARCHITECTURE.md
+
+```mermaid
+flowchart LR
+  subgraph "Client"
+    B[Browser]
+  end
+
+  subgraph "Frontend"
+    FE[Next.js React TS]
+  end
+
+  subgraph "Backend"
+    BE[FastAPI]
+    DB[(Postgres)]
+  end
+
+  subgraph "ELT"
+    PF[Prefect users_flow]
+    CSV[(raw/users.csv)]
+    DDB[(DuckDB)]
+    DBT[dbt models]
+  end
+
+  B -->|HTTP| FE
+  FE -->|/api/* rewrite| BE
+  BE --> DB
+
+  PF -->|GET /users/| BE
+  PF --> CSV
+  PF -->|load raw.raw_users| DDB
+  DBT -->|transform| DDB
+```
+
+More details in `docs/ARCHITECTURE.md`.
 
 ## Quickstart (backend only for now)
 
